@@ -7,8 +7,9 @@ use yii\helpers\Html;
         'id',
         'post_title',
         'post_text',
-        'name'
+        'user.name',
     ],
+
 ]);
 ?>
 <?= Html::a('Назад', ['/site/index'], ['class'=>'btn btn-primary']) ?>

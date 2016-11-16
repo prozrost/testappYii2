@@ -8,8 +8,10 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\Signup;
 use app\models\Login;
-use app\models\Insert;
+use app\models\Posts;
+use app\models\User;
 use yii\data\SqlDataProvider;
+use yii\data\ActiveDataProvider;
 class SiteController extends Controller
 {
     public function actionIndex()
@@ -21,6 +23,7 @@ class SiteController extends Controller
         else
         {
             $dataProvider = $this->getRecords();
+
             return $this->render('index',['dataProvider'=>$dataProvider]);
         }
     }
@@ -61,14 +64,14 @@ class SiteController extends Controller
                 return $this->goHome();
             }
         }
-            return $this->render('login',['login_model'=>$login_model]);
+        return $this->render('login',['login_model'=>$login_model]);
     }
     public function actionCreate()
     {
-        $post_model = new Insert();
-        if(isset($_POST['Insert']))
+        $post_model = new Posts();
+        if(isset($_POST['Posts']))
         {
-            $post_model->attributes = Yii::$app->request->post('Insert');
+            $post_model->attributes = Yii::$app->request->post('Posts');
             if($post_model->validate() && $post_model->insertPost())
             {
                 return $this->goHome();
@@ -84,18 +87,13 @@ class SiteController extends Controller
        }
        else
        {
-           $dataProvider = $this->getRecords()->getModels();
-           $data = $dataProvider[$id];
-           return $this->render('detail',['data'=>$data]);
+        $model = Posts::find()->where(['id'=>$id])->with('user')->one();
+        return $this->render('detail',['data'=>$model]);
        }
     }
     private function getRecords()
     {
-      return $dataProvider = new SqlDataProvider([
-    'sql' => 'SELECT p.id,p.user_id,p.post_title,p.post_text,u.name ' .
-             'FROM Posts p '.
-             'INNER JOIN User u ' .
-             'ON p.user_id = u.id'
-]);
+     return  $dataProvider = new ActiveDataProvider([
+              'query' => Posts::find()->joinWith('user')]);
     }
 }

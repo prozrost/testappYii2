@@ -7,12 +7,16 @@ use yii\grid\GridView;
         'ID'=>'id',
         'Title'=>'post_title',
         'Text'=>'post_text',
-        'Author'=>'name',
         [
             'class' => 'yii\grid\ActionColumn',
             'header'=>'Действия',
             'headerOptions' => ['width' => '80'],
             'template' => '{view}',
+
+        ],
+        [
+            'label' => 'Author',
+            'value' => 'user.name',
         ],
     ],
     'rowOptions' => function ($model, $key, $index, $grid) {
